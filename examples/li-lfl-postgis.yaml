@@ -1,0 +1,41 @@
+# Example Trollflow2 product list for storing LI LFL data to PostGIS database
+
+product_list:
+
+  reader: li_l2_nc
+  subscribe_topics:
+    - /mtg/0deg/li/lfl/segment
+
+  postgis:
+    # Make sure the inserted data and loaded datasets in the `products` dict are in the same order
+    insert_str: "INSERT INTO li_lfl (flash_time, radiance, flash_footprint, flash_duration, the_geom) VALUES (%s, %s, %s, %s, ST_Point(%s, %s, 4326))"
+    conversions:
+      flash_time:
+        - datetime64_to_str
+      radiance: []
+      flash_footprint:
+        - to_int16
+      flash_duration:
+        - divide_by_million
+        - to_uint16
+      latitude: []
+      longitude: []
+    host: gis-host.com
+    port: "5432"
+    database_name: "dbname"
+    # The credentials are read from POSTGIS_USER and POSTGIS_PASSWORD environment variables
+
+  areas:
+    # The area is used to limit what is stored.  Use `null` to store everything.
+    EPSG_3035_4km:
+      products:
+        flash_time: null
+        latitude: null
+        longitude: null
+        radiance: null
+        flash_footprint: null
+        flash_duration: null
+workers:
+  - fun: !!python/name:trollflow2.plugins.create_scene
+  - fun: !!python/name:trollflow2.plugins.load_composites
+  - fun: !!python/name:fmi_trollflow2_plugins.points2postgis

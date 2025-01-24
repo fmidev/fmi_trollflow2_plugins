@@ -1,0 +1,56 @@
+[project]
+name = "fmi_trollflow2_plugins"
+dynamic = ["version"]
+description = "FMI plugins for Pytroll Trollflow2"
+authors = [
+    { name = "Panu Lahtinen", email = "panu.lahtinen@fmi.fi" }
+]
+dependencies = [
+    "trollflow2"
+]
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "GPLv3" }
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Topic :: Scientific/Engineering"
+]
+
+[project.optional-dependencies]
+points2postgis = ["psycopg", "numpy", "satpy"]
+
+[build-system]
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.hatch.build.targets.wheel]
+packages = ["fmi_trollflow2_plugins"]
+
+[tool.hatch.version]
+source = "vcs"
+
+[tool.hatch.build.hooks.vcs]
+version-file = "fmi_trollflow2_plugins/version.py"
+
+[tool.isort]
+sections = ["FUTURE", "STDLIB", "THIRDPARTY", "FIRSTPARTY", "LOCALFOLDER"]
+profile = "black"
+skip_gitignore = true
+default_section = "THIRDPARTY"
+known_first_party = "fmi_trollflow2_plugins"
+line_length = 120
+
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.lint]
+# See https://docs.astral.sh/ruff/rules/
+# In the future, add "B", "S", "N"
+select = ["A", "D", "E", "W", "F", "I", "PT", "TID", "C90", "Q", "T10", "T20", "NPY"]
