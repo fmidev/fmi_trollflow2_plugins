@@ -65,6 +65,7 @@ def points2postgis(job):
     with get_database_connection(host, port, dbname) as conn:
         with conn.cursor() as cur:
             _store_data(cur, data, insert_str, area_def)
+        conn.commit()
 
 
 def _convert_and_compute_data_from_scene(scn, dataset_conversions):
