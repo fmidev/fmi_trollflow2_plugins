@@ -55,7 +55,7 @@ def points2postgis(job):
     dbname = job["product_list"]["product_list"]["postgis"]["database_name"]
 
     area_def_name = list(job["product_list"]["product_list"]["areas"].keys())[0]
-    if area_def_name is None:
+    if area_def_name == "None":
         area_def = None
     else:
         area_def = get_area_def(area_def_name)
