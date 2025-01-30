@@ -29,12 +29,13 @@ product_list:
     # The area is used to limit what is stored.  Use `null` to store everything.
     EPSG_3035_4km:
       products:
-        flash_time: null
-        latitude: null
-        longitude: null
-        radiance: null
-        flash_footprint: null
-        flash_duration: null
+        flash_time: {}
+        latitude: {}
+        longitude: {}
+        radiance: {}
+        flash_footprint: {}
+        flash_duration: {}
+
 workers:
   - fun: !!python/name:trollflow2.plugins.create_scene
   - fun: !!python/name:trollflow2.plugins.load_composites
