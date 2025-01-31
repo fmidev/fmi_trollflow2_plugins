@@ -27,7 +27,7 @@ jobs:
           environment-file: continuous_integration/environment.yaml
           activate-environment: test-environment
           channels: conda-forge
-          conda-demove-defaults: "true"
+          conda-remove-defaults: "true"
 
       - name: Install FMI Trollflow2 plugins
         shell: bash -l {0}
