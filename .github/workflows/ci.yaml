@@ -37,11 +37,4 @@ jobs:
       - name: Run tests
         shell: bash -l {0}
         run : |
-          pytest --cov=fmi_trollflow2_plugins fmi_trollflow2_plugins/tests --cov-report=xml
-
-      - name: Upload unittest coverage to Codecov
-        uses: codecov/codecov-action@v5
-        with:
-          flags: unittests
-          file: ./coverage.xml
-          env_vars: OS,PYTHON_VERSION,UNSTABLE
+          pytest fmi_trollflow2_plugins/tests
