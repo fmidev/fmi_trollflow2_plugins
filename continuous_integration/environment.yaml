@@ -1,0 +1,11 @@
+name: test-environment
+channels:
+  - conda-forge
+dependencies:
+  - dask
+  - numpy
+  - psycophg
+  - pytest
+  - pyyaml
+  - satpy
+  - xarray

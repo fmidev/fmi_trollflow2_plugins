@@ -1,0 +1,47 @@
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: true
+      matrix:
+        os: ["ubuntu-latest"]
+        python-version: ["3.12"]
+        experimental: [false]
+
+    env:
+      PYTHON_VERSION: ${{ matrix.python-version }}
+      OS: ${{ matrix.experimental }}
+      UNSTABLE: ${{ matrix.experimental }}
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Setup Conda environment
+        uses: conda-incubator/setup-miniconda@v3
+        with:
+          miniforge-version: latest
+          python-version: ${{ matrix.python-version }}
+          environment-file: continuous_integration/environment.yaml
+          activate-environment: test-environment
+          mamba-version: "*"
+          channels: conda-forge
+
+      - name: Install FMI Trollflow2 plugins
+        shell: bash -l {0}
+        run: |
+          pip install --no-deps -e .
+
+      - name: Run tests
+        shell: bash -l {0]
+        run : |
+          pytest --cov=fmi_trollflow2_plugins fmi_trollflow2_plugins/tests --cov-report=xml
+
+      - name: Upload unittest coverage to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          flags: unittests
+          file: ./coverage.xml
+          env_vars: OS,PYTHON_VERSION,UNSTABLE
