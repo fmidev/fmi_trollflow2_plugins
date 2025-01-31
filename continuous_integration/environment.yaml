@@ -4,7 +4,7 @@ channels:
 dependencies:
   - dask
   - numpy
-  - psycophg
+  - psycopg
   - pytest
   - pyyaml
   - satpy
