@@ -53,16 +53,16 @@ def create_li_lfl_scene():
     return scn
 
 
-def create_job(fname):
+def create_job(fname, scene):
     """Create a Trollflow2 job."""
     job = {
         "product_list": read_config(fname),
-        "scene": create_li_lfl_scene()
+        "scene": scene,
     }
     return job
 
 
-EXPECTED_NONE = (
+EXPECTED_LI_AREA_NONE = (
     ["2025-01-30 10:50:08.405700+00:00",
      np.float32(10.0), np.int16(2), np.uint16(300), np.float32(60.0), np.float32(25.0)],
     ["2025-01-30 10:50:08.489700+00:00",
@@ -72,7 +72,7 @@ EXPECTED_NONE = (
     ["2025-01-30 10:50:08.587700+00:00",
      np.float32(2000.0), np.int16(19), np.uint16(602), np.float32(-42.0), np.float32(42.0)]
 )
-EXPECTED_EURO4 = (
+EXPECTED_LI_AREA_EURO4 = (
     ["2025-01-30 10:50:08.405700+00:00",
      np.float32(10.0), np.int16(2), np.uint16(300), np.float32(60.0), np.float32(25.0)],
     ["2025-01-30 10:50:08.489700+00:00",
@@ -80,13 +80,14 @@ EXPECTED_EURO4 = (
 )
 
 @pytest.mark.parametrize(("config_fname", "expected_values"),
-                         [("trollflow2_points2postgis_none.yaml", EXPECTED_NONE),
-                          ("trollflow2_points2postgis_euro4.yaml", EXPECTED_EURO4)])
-def test_points2postgis(config_fname, expected_values):
-    """Test points2postgis plugin."""
+                         [("trollflow2_points2postgis_li_area_none.yaml", EXPECTED_LI_AREA_NONE),
+                          ("trollflow2_points2postgis_li_area_euro4.yaml", EXPECTED_LI_AREA_EURO4)])
+def test_points2postgis_li(config_fname, expected_values):
+    """Test points2postgis plugin with LI data."""
     from fmi_trollflow2_plugins import points2postgis
 
-    job = create_job(config_fname)
+    scene = create_li_lfl_scene()
+    job = create_job(config_fname, scene)
 
     conn = mock.MagicMock()
     cur = mock.MagicMock()
