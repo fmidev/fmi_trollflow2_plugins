@@ -34,12 +34,18 @@ def datetime64_to_str(times):
     return [str(dt.datetime.fromtimestamp((t - unix_epoch) / one_second, dt.timezone.utc)) for
             t in times]
 
+def datetime_to_str(times):
+    """Convert datetimes to PostGIS-recognized strings."""
+    if not isinstance(times, (list, tuple)):
+        times = [times]
+    return [str(t) for t in times]
 
 CONVERSIONS = {
     "to_int16": to_int16,
     "to_uint16": to_uint16,
     "divide_by_million": divide_by_million,
     "datetime64_to_str": datetime64_to_str,
+    "datetime_to_str": datetime_to_str,
 }
 
 
@@ -72,7 +78,13 @@ def _convert_and_compute_data_from_scene(scn, dataset_conversions):
     scn2 = scn.compute()
     data = {}
     for dset, conversions in dataset_conversions.items():
-        data[dset] = _apply_conversions(scn2[dset].data, conversions)
+        if dset in scn2:
+            val = scn2[dset].data
+        elif dset in ("nominal_time", "start_time"):
+            val = scn2.start_time
+        else:
+            raise AttributeError(f"No dataset {dset}.")
+        data[dset] = _apply_conversions(val, conversions)
     return data
 
 
@@ -99,7 +111,11 @@ def _store_data(cur, data, insert_str, area_def):
             continue
         values = []
         for key in data.keys():
-            values.append(data[key][i])
+            try:
+                val = data[key][i]
+            except IndexError:
+                val = data[key][0]
+            values.append(val)
         cur.execute(insert_str, values)
         num_stored += 1
 

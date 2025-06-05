@@ -1,5 +1,6 @@
 """Test the points2postgis plugin."""
 
+import datetime as dt
 import os
 from unittest import mock
 
@@ -91,7 +92,77 @@ def test_points2postgis_li(config_fname, expected_values):
 
     conn = mock.MagicMock()
     cur = mock.MagicMock()
-    # conn.__enter__.cursor.return_value.__enter__.return_value = cur
+    conn.__enter__.return_value = cur
+    with mock.patch("fmi_trollflow2_plugins.points2postgis.get_database_connection") as gdc:
+        gdc.return_value = conn
+        points2postgis(job)
+    execute_calls = cur.cursor.return_value.__enter__.return_value.execute.mock_calls
+
+    insert_str = job["product_list"]["product_list"]["postgis"]["insert_str"]
+    for i, call in enumerate(execute_calls):
+        assert call.args == (insert_str, expected_values[i])
+
+
+def create_hrw_scene():
+    """Create Scene with representative HRW data."""
+    scn = Scene()
+    start_time = dt.datetime(2025, 6, 5, 10)
+
+    scn["latitude"] = xr.DataArray(
+        da.array([60., 42., -60, -42], dtype=np.float32),
+        attrs={"start_time": start_time}
+    )
+    scn["longitude"] = xr.DataArray(
+        da.array([25., 10., 0, 42], dtype=np.float32),
+        attrs={"start_time": start_time}
+    )
+    scn["air_pressure"] = xr.DataArray(
+        da.array([980., 990., 1000., 1010.], dtype=np.float32),
+        attrs={"start_time": start_time}
+    )
+    scn["wind_speed"] = xr.DataArray(
+        da.array([5., 10., 20., 30.], dtype=np.float32),
+        attrs={"start_time": start_time}
+    )
+    scn["wind_from_direction"] = xr.DataArray(
+        da.array([15., 42., 59., 238.], dtype=np.float32),
+        attrs={"start_time": start_time}
+    )
+    scn["cloud_type"] = xr.DataArray(
+        da.array([1, 2, 3, 4], dtype=np.uint8),
+        attrs={"start_time": start_time}
+    )
+    scn["quality_index_with_forecast"] = xr.DataArray(
+        da.array([75, 78, 94, 84], dtype=np.uint8),
+        attrs={"start_time": start_time}
+    )
+
+    return scn
+
+
+EXPECTED_HRW_NONE = (
+    ["2025-06-05 10:00:00", np.float32(980.0), np.float32(5.0), np.float32(15.0),
+     np.uint8(1), np.uint8(75), np.float32(60.0), np.float32(25.0)],
+    ["2025-06-05 10:00:00", np.float32(990.0), np.float32(10.0), np.float32(42.0),
+     np.uint8(2), np.uint8(78), np.float32(42.0), np.float32(10.0)],
+    ["2025-06-05 10:00:00", np.float32(1000.0), np.float32(20.0), np.float32(59.0),
+     np.uint8(3), np.uint8(94), np.float32(-60.0), np.float32(0.0)],
+    ["2025-06-05 10:00:00", np.float32(1010.0), np.float32(30.0), np.float32(238.0),
+     np.uint8(4), np.uint8(84), np.float32(-42.0), np.float32(42.0)],
+)
+
+
+@pytest.mark.parametrize(("config_fname", "expected_values"),
+                         [("trollflow2_points2postgis_hrw.yaml", EXPECTED_HRW_NONE)])
+def test_points2postgis_hrw(config_fname, expected_values):
+    """Test points2postgis plugin with HRW data."""
+    from fmi_trollflow2_plugins import points2postgis
+
+    scene = create_hrw_scene()
+    job = create_job(config_fname, scene)
+
+    conn = mock.MagicMock()
+    cur = mock.MagicMock()
     conn.__enter__.return_value = cur
     with mock.patch("fmi_trollflow2_plugins.points2postgis.get_database_connection") as gdc:
         gdc.return_value = conn
