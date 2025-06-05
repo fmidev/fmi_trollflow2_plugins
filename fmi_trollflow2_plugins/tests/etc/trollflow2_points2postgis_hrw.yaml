@@ -1,0 +1,32 @@
+product_list:
+
+  reader: nwcsaf-geo
+  subscribe_topics:
+    - /nwc_geo/0deg/hrw
+
+  postgis:
+    insert_str: "INSERT INTO msg_0deg_hrw (nominal_time, air_pressure, wind_speed, wind_from_direction, cloud_type, quality_index_with_forecast, the_geom) VALUES (%s, %s, %s, %s, ST_Point(%s, %s, 4326))"
+    conversions:
+      nominal_time:
+        - datetime_to_str
+      air_pressure: []
+      wind_speed: []
+      wind_from_direction: []
+      cloud_type: []
+      quality_index_with_forecast: []
+      latitude: []
+      longitude: []
+    host: gis-host.com
+    port: "5432"
+    database_name: "dbname"
+
+  areas:
+    "None":
+      products:
+        air_pressure: {}
+        wind_speed: {}
+        wind_from_direction: {}
+        cloud_type: {}
+        quality_index_with_forecast: {}
+        latitude: {}
+        longitude: {}
