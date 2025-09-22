@@ -21,7 +21,7 @@ classifiers = [
 ]
 
 [project.optional-dependencies]
-points2postgis = ["psycopg", "numpy", "satpy"]
+points2postgis = ["psycopg", "numpy", "satpy>=0.58.0"]
 
 [build-system]
 requires = ["hatchling", "hatch-vcs"]

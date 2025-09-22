@@ -7,7 +7,7 @@ from contextlib import contextmanager
 
 import numpy as np
 import psycopg
-from satpy.resample import get_area_def
+from satpy.area.resample import get_area_def
 
 logger = logging.getLogger(__name__)
 
