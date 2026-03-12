@@ -8,7 +8,7 @@ product_list:
 
   postgis:
     # Make sure the inserted data and loaded datasets in the `products` dict are in the same order
-    insert_str: "INSERT INTO li_lfl (flash_time, radiance, flash_footprint, flash_duration, the_geom) VALUES (%s, %s, %s, %s, ST_Point(%s, %s, 4326))"
+    insert_str: "INSERT INTO li_lfl (flash_time, radiance, flash_footprint, flash_duration, flash_id, the_geom) VALUES (%s, %s, %s, %s, ST_Point(%s, %s, 4326))"
     conversions:
       flash_time:
         - datetime64_to_str
@@ -18,6 +18,8 @@ product_list:
       flash_duration:
         - divide_by_million
         - to_uint16
+      flash_id:
+        - to_int32
       latitude: []
       longitude: []
     host: gis-host.com

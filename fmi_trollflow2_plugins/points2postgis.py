@@ -22,6 +22,16 @@ def to_uint16(data):
     return data.astype(np.uint16)
 
 
+def to_int32(data):
+    """Convert the data to int32."""
+    return data.astype(np.int32)
+
+
+def to_uint32(data):
+    """Convert the data to uint32."""
+    return data.astype(np.uint32)
+
+
 def divide_by_million(data):
     """Divide the data by a million."""
     return data / 1e6
@@ -43,6 +53,8 @@ def datetime_to_str(times):
 CONVERSIONS = {
     "to_int16": to_int16,
     "to_uint16": to_uint16,
+    "to_int32": to_int32,
+    "to_uint32": to_uint32,
     "divide_by_million": divide_by_million,
     "datetime64_to_str": datetime64_to_str,
     "datetime_to_str": datetime_to_str,

@@ -46,6 +46,9 @@ def create_li_lfl_scene():
     scn["flash_footprint"] = xr.DataArray(
         da.array([2., 18., 5., 19.], dtype=np.float32)
     )
+    scn["flash_id"] = xr.DataArray(
+        da.array([118216, 118219, 118230, 118259], dtype=np.uint32)
+    )
     scn["flash_duration"] = xr.DataArray(
         da.array([300000000, 606000000, 228000000, 602000000],
         dtype="timedelta64[ns]")
@@ -75,9 +78,9 @@ EXPECTED_LI_AREA_NONE = (
 )
 EXPECTED_LI_AREA_EURO4 = (
     ["2025-01-30 10:50:08.405700+00:00",
-     np.float32(10.0), np.int16(2), np.uint16(300), np.float32(60.0), np.float32(25.0)],
+     np.float32(10.0), np.int16(2), np.uint16(300), np.uint32(118216), np.float32(60.0), np.float32(25.0)],
     ["2025-01-30 10:50:08.489700+00:00",
-     np.float32(100.0), np.int16(18), np.uint16(606), np.float32(42.0), np.float32(10.0)],
+     np.float32(100.0), np.int16(18), np.uint16(606), np.uint32(118219), np.float32(42.0), np.float32(10.0)],
 )
 
 @pytest.mark.parametrize(("config_fname", "expected_values"),
